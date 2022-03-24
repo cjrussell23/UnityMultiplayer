@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : Singleton<UIManager>
+public class UIManager : NetworkBehaviour
 {
     [SerializeField] private Button startServerButton;
     [SerializeField] private Button startHostButton;
@@ -13,19 +13,22 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private int _maxPlayers = 2;
     [SerializeField] private Text _p1ScoreText;
     [SerializeField] private Text _p2ScoreText;
-    private NetworkVariable<int> p1NetworkScore = new NetworkVariable<int>();
-    private NetworkVariable<int> p2NetworkScore = new NetworkVariable<int>();
+    
+    //private int _p1Score;
+    //private int _p2Score;
 
 
     private void Awake()
     {
         Cursor.visible = true;
-        p1NetworkScore.Value = 0;
-        p2NetworkScore.Value = 0;
+        //_p1Score = 0;
+        //_p2Score = 0;
     }
     private void Update()
     {
         playersInGameText.text = $"Players in game: {PlayersManager.Instance.PlayersInGame}";
+        _p1ScoreText.text = PlayersManager.Instance.Player1Score.ToString();
+        _p2ScoreText.text = PlayersManager.Instance.Player2Score.ToString();
     }
     private void Start()
     {
@@ -34,6 +37,7 @@ public class UIManager : Singleton<UIManager>
             if (NetworkManager.Singleton.StartServer())
             {
                 Debug.Log("Starting server...");
+                //ToggleUI(false);
             }
             else
             {
@@ -45,6 +49,7 @@ public class UIManager : Singleton<UIManager>
             if (NetworkManager.Singleton.StartHost())
             {
                 Debug.Log("Starting host...");
+                //ToggleUI(false);
             }
             else
             {
@@ -58,7 +63,8 @@ public class UIManager : Singleton<UIManager>
                 if (NetworkManager.Singleton.StartClient())
                 {
                     Debug.Log("Starting client...");
-                    
+                    //ToggleUI(false);
+
                 }
                 else
                 {
@@ -67,17 +73,10 @@ public class UIManager : Singleton<UIManager>
             }         
         });
     }
-    public void Score(int player)
+    private void ToggleUI(bool active)
     {
-        if (player == 1)
-        {
-            p1NetworkScore.Value++;
-            _p1ScoreText.text = p1NetworkScore.Value.ToString();
-        }
-        if (player == 2)
-        {
-            p2NetworkScore.Value++;
-            _p2ScoreText.text = p2NetworkScore.Value.ToString();
-        }
+        startClientButton.gameObject.SetActive(active);
+        startServerButton.gameObject.SetActive(active);
+        startHostButton.gameObject.SetActive(active);
     }
 }
