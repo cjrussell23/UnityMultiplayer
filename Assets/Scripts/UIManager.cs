@@ -29,6 +29,10 @@ public class UIManager : NetworkBehaviour
         playersInGameText.text = $"Players in game: {PlayersManager.Instance.PlayersInGame}";
         _p1ScoreText.text = PlayersManager.Instance.Player1Score.ToString();
         _p2ScoreText.text = PlayersManager.Instance.Player2Score.ToString();
+        if (Input.GetAxis("Cancel") > 0)
+        {
+            Disconnect();
+        }
     }
     private void Start()
     {
@@ -37,7 +41,7 @@ public class UIManager : NetworkBehaviour
             if (NetworkManager.Singleton.StartServer())
             {
                 Debug.Log("Starting server...");
-                //ToggleUI(false);
+                ToggleUI(false);
             }
             else
             {
@@ -49,7 +53,7 @@ public class UIManager : NetworkBehaviour
             if (NetworkManager.Singleton.StartHost())
             {
                 Debug.Log("Starting host...");
-                //ToggleUI(false);
+                ToggleUI(false);
             }
             else
             {
@@ -63,7 +67,7 @@ public class UIManager : NetworkBehaviour
                 if (NetworkManager.Singleton.StartClient())
                 {
                     Debug.Log("Starting client...");
-                    //ToggleUI(false);
+                    ToggleUI(false);
 
                 }
                 else
@@ -78,5 +82,10 @@ public class UIManager : NetworkBehaviour
         startClientButton.gameObject.SetActive(active);
         startServerButton.gameObject.SetActive(active);
         startHostButton.gameObject.SetActive(active);
+    }
+    public void Disconnect()
+    {
+        NetworkManager.Singleton.Shutdown();
+        ToggleUI(true);
     }
 }

@@ -26,7 +26,7 @@ public class PlayerControl : NetworkBehaviour
         }
         
     }
-    private void Update()
+    private void FixedUpdate()
     {
         if (IsServer)
         {
@@ -53,6 +53,7 @@ public class PlayerControl : NetworkBehaviour
         {
             cyPos -= _speed;
         }
+        //cyPos *= Time.deltaTime;
         if (_oldPos != cyPos)
         {
             _oldPos = cyPos;
